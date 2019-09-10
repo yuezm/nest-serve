@@ -1,5 +1,5 @@
 {
-  "name": "create-nest-server",
+  "name": "nest-serve",
   "version": "0.0.2",
   "description": "create nest application",
   "keywords": [
@@ -8,7 +8,7 @@
     "nest-application"
   ],
   "bin": {
-    "create-nest-server": "bin/create-nest-server.js"
+    "create-nest-server": "bin/nest-serve.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

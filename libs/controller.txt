@@ -1,0 +1,8 @@
+import { Controller } from '@nestjs/common';
+import { {{nameHump}}Service } from '../service/{{name}}.service';
+
+@Controller('{{name}}')
+export class {{nameHump}}Controller {
+  constructor(private readonly {{name}}Service: {{nameHump}}Service) {
+  }
+}
