@@ -12,6 +12,7 @@ const APP_PATH = './src/app/app.module.ts';
 
 function generator(name: string, options?: any) {
   const sourceData: INameSerialization = serializePathName(name);
+
   ([ 'module', 'controller', 'service', 'dto' ] as ECompileType[]).map((type: ECompileType) =>
     compileByType(type, sourceData, `./src/app/${ name }`));
 
@@ -21,7 +22,7 @@ function generator(name: string, options?: any) {
 
     // 替换 import
     appStr = appStr.replace(APP_IMPORT_REG, (p: string) => {
-      return p + `import { ${ sourceData.nameHump }Module } from '@App/test/${ sourceData.path }.module';\n`;
+      return p + `import { ${ sourceData.nameHump }Module } from '@App/${ name }/${ sourceData.path }.module';\n`;
     });
 
     // 替换imports属性
@@ -29,6 +30,7 @@ function generator(name: string, options?: any) {
       return p + `  ${ sourceData.nameHump }Module\n`;
     });
 
+    // 将新的数据写入app.module.ts
     writeFileSync(APP_PATH, appStr);
   }
 }
