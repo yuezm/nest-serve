@@ -1,52 +1,47 @@
 #!/usr/env/bind node
-
-'use strict';
-
-const chalk = require('chalk');
-const ora = require('ora');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const chalk = require("chalk");
+const ora = require("ora");
+const log_symbols_1 = require("log-symbols");
+const path_1 = require("path");
+const util_1 = require("./util");
 const download = require('download-git-repo');
-const symbols = require('log-symbols');
-const path = require('path');
-
-const { compile } = require('../util/util');
-
-let spinner, h, m;
-
-function create(name, options = {}) {
-  spinner = ora('正在下载模板...');
-  spinner.start();
-  download('github:yuezm/nest-template#master', name, { clone: false }, async err => {
-    if (err) {
-      throw err;
-    }
-
-    spinner.succeed();
-
-    compile(`${name}/package.json`, { name });
-    console.log(symbols.success, chalk.green('finish......'));
-    console.log('run');
-    console.log(chalk.green(`  cd ${name} && npm install`));
-    console.log(chalk.green('  npm run dev'));
-  });
+let spinner;
+function create(name, options) {
+    spinner = ora(`downloading template... from ${options.repository}`);
+    spinner.start();
+    download(options.repository, name, { clone: false }, async (err) => {
+        if (err) {
+            throw err;
+        }
+        spinner.succeed();
+        spinner = ora('compile template...');
+        spinner.start();
+        const sourceData = util_1.serializePathName(name);
+        util_1.compileSourceToTarget(`${name}/package.json`, sourceData);
+        util_1.compileSourceToTarget(`${name}/startup.json`, sourceData);
+        spinner.succeed();
+        console.log(log_symbols_1.success, chalk.default.green('all finish...'));
+        console.log('run');
+        console.log(chalk.default.green(`  cd ${name} && npm install`));
+        console.log(chalk.default('  npm run dev'));
+    });
 }
-
-module.exports = function (name, cmd) {
-  try {
-    h = cmd.http;
-    m = cmd.micro;
-
-    if (name === '.') {
-      name = path.basename(process.cwd());
+function serveNew(name, repositoryPath, options) {
+    try {
+        if (!name) {
+            console.error(chalk.default.red('app-name should be not empty'));
+            return;
+        }
+        if (name === '.') {
+            name = path_1.basename(process.cwd());
+        }
+        create(name, { repository: repositoryPath || 'github:yuezm/nest-template#master' });
     }
-
-    create(name);
-  } catch (e) {
-    console.error(chalk.red(e));
-
-    spinner && spinner.fail();
-
-    process.exit();
-  }
-};
-
-
+    catch (e) {
+        console.error(chalk.default.red(e));
+        spinner && spinner.fail();
+    }
+}
+exports.serveNew = serveNew;

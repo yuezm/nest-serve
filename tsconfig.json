@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2017",
+    "sourceMap": false,
+    "outDir": "./bin",
+    "baseUrl": "./",
+    "incremental": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public",
+    "test*",
+    "src/**/*.spec.ts"
+  ]
+}

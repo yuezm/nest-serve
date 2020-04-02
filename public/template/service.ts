@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class {{nameHump}}Service {
+export class <%= nameHump %>Service {
 }
