@@ -8,4 +8,4 @@ import { <%= nameHump %>Service } from './<%= name %>.service';
   providers: [ <%= nameHump %>Service ],
 })
 export class <%= nameHump %>Module {
-};
+}

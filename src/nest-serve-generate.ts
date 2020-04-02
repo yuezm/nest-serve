@@ -27,7 +27,7 @@ function generator(name: string, options?: any) {
 
     // 替换imports属性
     appStr = appStr.replace(APP_MODULE_IMPORTS_REG, (p: string) => {
-      return p + `  ${ sourceData.nameHump }Module\n`;
+      return p + `  ${ sourceData.nameHump }Module,\n`;
     });
 
     // 将新的数据写入app.module.ts
