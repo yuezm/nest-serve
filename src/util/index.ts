@@ -51,8 +51,8 @@ export function compileByType(type: ECompileType, sourceData: INameSerialization
 
 /**
  * 序列化输入的模块名称，返回 模块模块内部文件名，文件引用名，文件类型名，例如
- * test         test        Test
- * test.detail  testDetail  TestDetail
+ * test => path: test         name: test        nameHump: Test
+ * test-detail => path: test.detail  name: testDetail  nameHump: TestDetail
  */
 export function serializePathName(name: string): INameSerialization {
   const data: INameSerialization = { path: name, name, nameHump: '' };

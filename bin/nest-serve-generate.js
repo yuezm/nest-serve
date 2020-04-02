@@ -14,7 +14,7 @@ function generator(name, options) {
     if (fs_1.existsSync(APP_PATH)) {
         let appStr = fs_1.readFileSync(APP_PATH).toString();
         appStr = appStr.replace(APP_IMPORT_REG, (p) => {
-            return p + `import { ${sourceData.nameHump}Module } from '@App/test/${sourceData.path}.module';\n`;
+            return p + `import { ${sourceData.nameHump}Module } from '@App/${name}/${sourceData.path}.module';\n`;
         });
         appStr = appStr.replace(APP_MODULE_IMPORTS_REG, (p) => {
             return p + `  ${sourceData.nameHump}Module\n`;
