@@ -1,6 +1,6 @@
 {
   "name": "nest-serve",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "create nest application",
   "keywords": [
     "nest",
@@ -37,6 +37,10 @@
   "engines": {
     "node": ">=10.0.0 <13.0.0"
   },
+  "files": [
+    "bin",
+    "public"
+  ],
   "jest": {
     "moduleFileExtensions": [
       "js",
@@ -48,7 +52,7 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node"
   }
 }
