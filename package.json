@@ -14,7 +14,7 @@
     "build": "tsc",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "publish": "npm run build && npm publish"
+    "prepublish": "npm run build"
   },
   "author": "keven",
   "license": "ISC",

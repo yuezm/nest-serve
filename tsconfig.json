@@ -9,7 +9,7 @@
     "sourceMap": false,
     "outDir": "./bin",
     "baseUrl": "./",
-    "incremental": true,
+    "incremental": false,
     "alwaysStrict": true,
     "moduleResolution": "node",
     "types": [
