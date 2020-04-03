@@ -30,8 +30,6 @@ function generator(name: string, options?: any) {
       return p + `\u00A0\u00A0${ sourceData.nameHump }Module,`;
     });
 
-    console.log(appStr);
-
     // 将新的数据写入app.module.ts
     writeFileSync(APP_PATH, appStr);
   }
