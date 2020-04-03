@@ -9,6 +9,8 @@ var ECompileType;
     ECompileType["DTO"] = "dto";
     ECompileType["MODULE"] = "module";
     ECompileType["SERVICE"] = "service";
+    ECompileType["STATIC"] = "static";
+    ECompileType["SPEC"] = "controller.spec";
 })(ECompileType = exports.ECompileType || (exports.ECompileType = {}));
 function compileSourceToTarget(sourcePath, sourceData, targetPath = sourcePath) {
     fs_1.writeFileSync(targetPath, ejs_1.compile(fs_1.readFileSync(sourcePath).toString(), null)(sourceData), {

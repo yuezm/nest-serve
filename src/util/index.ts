@@ -13,6 +13,8 @@ export enum ECompileType {
   DTO = 'dto',
   MODULE = 'module',
   SERVICE = 'service',
+  STATIC = 'static',
+  SPEC = 'controller.spec',
 }
 
 /**

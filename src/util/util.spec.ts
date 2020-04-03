@@ -31,7 +31,7 @@ describe('Test Util', () => {
 
     compileSourceToTarget(sourcePath, sourceData);
     expect(existsSync(sourcePath)).toBe(true);
-    expect(readFileSync(sourcePath).toString().replace(/\n+/g, '').trim()).toBe('import { Controller } from \'@nestjs/common\';import { TestService } from \'./service/test.service\';@Controller(\'/v1/test\')export class TestController {  constructor(private readonly testService: TestService) {  }}');
+    expect(readFileSync(sourcePath).toString().replace(/\n+/g, '').trim()).toBe('import { Controller } from \'@nestjs/common\';import { TestService } from \'./test.service\';@Controller(\'/v1/test\')export class TestController {  constructor(private readonly testService: TestService) {  }}');
     unlinkSync(sourcePath);
   });
 

@@ -1,6 +1,6 @@
 {
   "name": "nest-serve",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "create nest application",
   "keywords": [
     "nest",
@@ -11,10 +11,11 @@
     "nest-serve": "bin/main.js"
   },
   "scripts": {
+    "prebuild": "rimraf bin",
     "build": "tsc",
+    "prepublish": "npm run build",
     "test": "jest",
-    "test-cov": "jest --coverage",
-    "prepublish": "npm run build"
+    "test:cov": "jest --coverage"
   },
   "author": "keven",
   "license": "ISC",

@@ -17,11 +17,10 @@
       "node"
     ]
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
-    "node_modules",
-    "dist",
-    "public",
-    "test*",
-    "src/**/*.spec.ts"
+    "./**/*.spec.ts"
   ]
 }

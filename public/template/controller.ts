@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { <%= nameHump %>Service } from './<%= name %>.service';
+import { <%= nameHump %>Service } from './<%= path %>.service';
 
 @Controller('/v1/<%= name %>')
 export class <%= nameHump %>Controller {
