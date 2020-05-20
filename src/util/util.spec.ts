@@ -1,13 +1,9 @@
-import { compileByType, compileSourceToTarget, ECompileType, serializePathName } from "./index";
-import { join } from "path";
-import { existsSync, unlinkSync, mkdirSync, rmdirSync, copyFileSync, readFileSync } from "fs";
+import { effectCompile, effectCompileTemplate, ETemplateType, serializePathName, toHumpString } from './index';
+import { join } from 'path';
+import { existsSync, unlinkSync, mkdirSync, rmdirSync, copyFileSync, readFileSync } from 'fs';
 
 describe('Test Util', () => {
-  const sourceData = {
-    path: 'test',
-    name: 'test',
-    nameHump: 'Test'
-  };
+  const sourceData = serializePathName('test');
   const targetDir = './test';
   const targetPath = join(targetDir, 'test.controller.ts');
 
@@ -23,34 +19,31 @@ describe('Test Util', () => {
     }
   });
 
-  it('test compileSourceToTarget has no targetPath', () => {
-    const sourceDirPath = join('./', 'public/template');
-    const sourcePath = join('./test', `${ sourceData.path }.controller.ts`);
-
-    copyFileSync(join(sourceDirPath, 'controller.ts'), sourcePath);
-
-    compileSourceToTarget(sourcePath, sourceData);
-    expect(existsSync(sourcePath)).toBe(true);
-    expect(readFileSync(sourcePath).toString().replace(/\n+/g, '').trim()).toBe('import { Controller } from \'@nestjs/common\';import { TestService } from \'./test.service\';@Controller(\'/v1/test\')export class TestController {  constructor(private readonly testService: TestService) {  }}');
-    unlinkSync(sourcePath);
-  });
-
-  it('test compileSourceToTarget', () => {
-    compileSourceToTarget(
+  it('test effectCompileTemplate full arguments', () => {
+    effectCompileTemplate(
       join('./', 'public/template/controller.ts'),
       sourceData,
-      targetPath
+      targetPath,
     );
     expect(existsSync(targetPath)).toBe(true);
     unlinkSync(targetPath);
   });
 
-  it('test compileByType targetDir is empty', () => {
-    if (existsSync(targetDir)) {
-      rmdirSync(targetDir);
-    }
-    compileByType(
-      ECompileType.CONTROLLER,
+  it('test effectCompileTemplate has no targetPath', () => {
+    const sourceDirPath = join('./', 'public/template');
+    const sourcePath = join('./test', `${ sourceData.path }.controller.ts`);
+
+    copyFileSync(join(sourceDirPath, 'controller.ts'), sourcePath);
+
+    effectCompileTemplate(sourcePath, sourceData);
+    expect(existsSync(sourcePath)).toBe(true);
+    expect(readFileSync(sourcePath).toString().replace(/\n+/g, '').trim()).toBe('import { Controller } from \'@nestjs/common\';import { TestService } from \'./test.service\';@Controller(\'/v1/test\')export class TestController {  constructor(private readonly testService: TestService) {  }}');
+    unlinkSync(sourcePath);
+  });
+
+  it('test effectCompile', () => {
+    effectCompile(
+      ETemplateType.CONTROLLER,
       sourceData,
       targetDir,
     );
@@ -58,9 +51,12 @@ describe('Test Util', () => {
     unlinkSync(targetPath);
   });
 
-  it('test compileByType', () => {
-    compileByType(
-      ECompileType.CONTROLLER,
+  it('test effectCompile targetDir is empty', () => {
+    if (existsSync(targetDir)) {
+      rmdirSync(targetDir);
+    }
+    effectCompile(
+      ETemplateType.CONTROLLER,
       sourceData,
       targetDir,
     );
@@ -76,7 +72,12 @@ describe('Test Util', () => {
     expect(serializePathName('test-detail')).toMatchObject({
       path: 'test.detail',
       name: 'testDetail',
-      nameHump: 'TestDetail'
+      nameHump: 'TestDetail',
     });
-  })
+  });
+
+  it('test toHumpString', function() {
+    expect(toHumpString('')).toBe('');
+    expect('test').toBe('Test');
+  });
 });

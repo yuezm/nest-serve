@@ -4,7 +4,7 @@ import * as chalk from 'chalk';
 import * as ora from 'ora';
 import { success } from 'log-symbols';
 import { basename } from 'path';
-import { compileSourceToTarget, INameSerialization, serializePathName } from "./util";
+import { effectCompileTemplate, INameSerialization, serializePathName } from "./util";
 
 
 const download = require('download-git-repo');
@@ -29,8 +29,8 @@ function create(name: string, options: ICreateOptions): void {
     spinner.start();
 
     const sourceData: INameSerialization = serializePathName(name);
-    compileSourceToTarget(`${ name }/package.json`, sourceData);
-    compileSourceToTarget(`${ name }/startup.json`, sourceData);
+    effectCompileTemplate(`${ name }/package.json`, sourceData);
+    effectCompileTemplate(`${ name }/startup.json`, sourceData);
     spinner.succeed();
 
     console.log(success, chalk.default.green('all finish...'));

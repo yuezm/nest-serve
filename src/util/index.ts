@@ -1,71 +1,79 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { compile } from 'ejs';
+import { ICompileArgs } from '../nest-serve-generate';
+
+const TEMPLATE_PATH = join(__dirname, '../../public/template');
 
 export interface INameSerialization {
-  path: string;
-  name?: string;
-  nameHump?: string;
+  path: string; // 路径名，例如 user、user.role
+  name: string; // 序列化后的名称，例如 user、userRole
+  nameHump: string; // 序列化后的大驼峰命名，例如 User、UserRole
 }
 
-export enum ECompileType {
+export interface ICompileArgs extends INameSerialization {
+  isServiceMicro: boolean;
+}
+
+// 文件类型枚举
+export enum ETemplateType {
   CONTROLLER = 'controller',
   DTO = 'dto',
   MODULE = 'module',
   SERVICE = 'service',
   STATIC = 'static',
-  SPEC = 'controller.spec',
+  SPEC = 'spec',
 }
 
 /**
  * handlebars 模板解析
- * @param {*} sourcePath 原始文件路径
- * @param {*} sourceData 模板变量
+ * @param {*} templatePath 原始文件路径
+ * @param {*} templateData 模板变量传参
  * @param {*} targetPath 生成文件路径
  */
-export function compileSourceToTarget(sourcePath: string, sourceData: INameSerialization, targetPath: string = sourcePath): void {
+export function effectCompileTemplate(templatePath: string, templateData: ICompileArgs, targetPath: string = templatePath): void {
   writeFileSync(
     targetPath,
-    compile(readFileSync(sourcePath).toString(), null)(sourceData),
+    compile(readFileSync(templatePath).toString(), null)(templateData),
     {
       flag: 'w+',
-    }
+    },
   );
 }
 
-/**
- * 根据不同类型，编译不同模板
- * @param type
- * @param sourceData
- * @param targetDirPath
- */
-export function compileByType(type: ECompileType, sourceData: INameSerialization, targetDirPath: string): void {
+// 根据不同类型，编译不同模板
+export function effectCompile(type: ETemplateType, templateData: ICompileArgs, targetDirPath: string): void {
   if (!existsSync(targetDirPath)) {
     mkdirSync(targetDirPath, { recursive: true });
   }
 
-  compileSourceToTarget(
-    join(__dirname, `../../public/template/${ type }.ts`),
-    sourceData,
-    join(targetDirPath, `${ sourceData.path }.${ type }.ts`)
+  effectCompileTemplate(
+    join(TEMPLATE_PATH, `${ type }.ts`),
+    templateData,
+    join(targetDirPath, `${ templateData.path }.${ type }.ts`),
   );
 }
 
-/**
- * 序列化输入的模块名称，返回 模块模块内部文件名，文件引用名，文件类型名，例如
- * test => path: test         name: test        nameHump: Test
- * test-detail => path: test.detail  name: testDetail  nameHump: TestDetail
- */
-export function serializePathName(name: string): INameSerialization {
-  const data: INameSerialization = { path: name, name, nameHump: '' };
+// 名称序列化
+export function serializePathName(moduleName: string): INameSerialization {
+  const data: INameSerialization = { path: moduleName, name: moduleName, nameHump: '' };
 
-  if (name.includes('-')) {
-    // 可能存在含有短横线的名称 -
-    data.path = name.replace(/-/g, '.');
-    data.name = name.replace(/-(\w)?/g, (p1, p2) => p2 ? p2.toUpperCase() : '');
+  // 可能存在含有短横线的名称
+  if (moduleName.includes('-')) {
+    // user-role => user.role
+    data.path = moduleName.replace(/-/g, '.');
+
+    // user-role => userRole
+    data.name = moduleName.replace(/-(\w)?/g, (p1, p2) => p2 ? p2.toUpperCase() : '');
   }
-  data.nameHump = data.name[ 0 ].toUpperCase() + data.name.substring(1);
+
+  data.nameHump = toHumpString(data.name);
 
   return data;
+}
+
+// 字符串转大驼峰
+export function toHumpString(s: string): string {
+  return s === '' ? '' : s.replace(s[ 0 ], s[ 0 ].toUpperCase());
 }
 

@@ -19,8 +19,8 @@ function create(name, options) {
         spinner = ora('compile template...');
         spinner.start();
         const sourceData = util_1.serializePathName(name);
-        util_1.compileSourceToTarget(`${name}/package.json`, sourceData);
-        util_1.compileSourceToTarget(`${name}/startup.json`, sourceData);
+        util_1.effectCompileTemplate(`${name}/package.json`, sourceData);
+        util_1.effectCompileTemplate(`${name}/startup.json`, sourceData);
         spinner.succeed();
         console.log(log_symbols_1.success, chalk.default.green('all finish...'));
         console.log('run');
