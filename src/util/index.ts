@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { compile } from 'ejs';
-import { ICompileArgs } from '../nest-serve-generate';
+import { throws } from 'assert';
 
 const TEMPLATE_PATH = join(__dirname, '../../public/template');
 
@@ -12,11 +12,11 @@ export interface INameSerialization {
 }
 
 export interface ICompileArgs extends INameSerialization {
-  isServiceMicro: boolean;
+  isGRpc?: boolean;
 }
 
 // 文件类型枚举
-export enum ETemplateType {
+export const enum ETemplateType {
   CONTROLLER = 'controller',
   DTO = 'dto',
   MODULE = 'module',
@@ -43,12 +43,13 @@ export function effectCompileTemplate(templatePath: string, templateData: ICompi
 
 // 根据不同类型，编译不同模板
 export function effectCompile(type: ETemplateType, templateData: ICompileArgs, targetDirPath: string): void {
+
   if (!existsSync(targetDirPath)) {
     mkdirSync(targetDirPath, { recursive: true });
   }
 
   effectCompileTemplate(
-    join(TEMPLATE_PATH, `${ type }.ts`),
+    join(TEMPLATE_PATH, `${ type }.txt`),
     templateData,
     join(targetDirPath, `${ templateData.path }.${ type }.ts`),
   );
@@ -57,14 +58,16 @@ export function effectCompile(type: ETemplateType, templateData: ICompileArgs, t
 // 名称序列化
 export function serializePathName(moduleName: string): INameSerialization {
   const data: INameSerialization = { path: moduleName, name: moduleName, nameHump: '' };
-
+  if (/.*?[-.]$/.test(moduleName)) {
+    throw new Error('错误模块名');
+  }
   // 可能存在含有短横线的名称
   if (moduleName.includes('-')) {
     // user-role => user.role
     data.path = moduleName.replace(/-/g, '.');
 
     // user-role => userRole
-    data.name = moduleName.replace(/-(\w)?/g, (p1, p2) => p2 ? p2.toUpperCase() : '');
+    data.name = moduleName.replace(/-(\w)?/g, (p1, p2) => p2.toUpperCase());
   }
 
   data.nameHump = toHumpString(data.name);

@@ -4,8 +4,8 @@ import { command, version, parse, help, Command } from 'commander';
 
 const packageJson = require('../package');
 
-import { serveNew } from './nest-serve-new';
-import { serveGenerate } from './nest-serve-generate';
+import { serveNew } from './new';
+import { serveGenerate } from './generate';
 
 // 版本
 version(packageJson.version).usage('<command> [options]');
@@ -29,8 +29,8 @@ command('generate <name>')
   .option('-s,--service', '只创建 *.service.ts')
   .option('-o,--dto', '只创建 *.dto.ts')
   .option('-t,--static', '只创建 *.static.ts')
-  .option('-p,--path,', '选择创建模块路径，默认为 src/app')
-  .option('-mic,--micro,', 'service 是否添加 gRPC client')
+  .option('-p,--path <value>', '选择创建模块路径，默认为 src/app')
+  .option('-g,--grpc', 'service 是否添加 gRPC client')
   .description(
     '在当前项目创建模块，包括module、controller、service...，并添加到AppModule',
   )

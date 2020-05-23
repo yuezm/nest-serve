@@ -1,0 +1,27 @@
+import { Injectable } from '@nestjs/common';
+<% if(isGRpc){%>
+import { Client, ClientGrpc } from '@nestjs/microservices';
+
+import { getGRPCClientOption } from '@Src/helper';
+import { ConfigService } from '@Config/config.service';
+<% } %>
+
+@Injectable()
+export class <%= nameHump %>Service {
+<% if(isGRpc){%>
+  private <%= name %>RpcService: T;
+
+  @Client(
+    getGRPCClientOption({
+      url: ConfigService.get('T'),
+      package: 'T',
+      protoPath: 'T',
+    }),
+  )
+  private readonly client: ClientGrpc;
+
+  onModuleInit() {
+    this.<%= name %>RpcService = this.client.getService<T>('T');
+  }
+<% } %>
+}

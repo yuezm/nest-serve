@@ -21,7 +21,7 @@ describe('Test Util', () => {
 
   it('test effectCompileTemplate full arguments', () => {
     effectCompileTemplate(
-      join('./', 'public/template/controller.ts'),
+      join('./', 'public/template/controller.txt'),
       sourceData,
       targetPath,
     );
@@ -33,7 +33,7 @@ describe('Test Util', () => {
     const sourceDirPath = join('./', 'public/template');
     const sourcePath = join('./test', `${ sourceData.path }.controller.ts`);
 
-    copyFileSync(join(sourceDirPath, 'controller.ts'), sourcePath);
+    copyFileSync(join(sourceDirPath, 'controller.txt'), sourcePath);
 
     effectCompileTemplate(sourcePath, sourceData);
     expect(existsSync(sourcePath)).toBe(true);
@@ -74,10 +74,12 @@ describe('Test Util', () => {
       name: 'testDetail',
       nameHump: 'TestDetail',
     });
+
+    expect(() => serializePathName('test-')).toThrowError('错误模块名');
   });
 
   it('test toHumpString', function() {
     expect(toHumpString('')).toBe('');
-    expect('test').toBe('Test');
+    expect(toHumpString('test')).toBe('Test');
   });
 });
