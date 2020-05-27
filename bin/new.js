@@ -2,46 +2,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const chalk = require("chalk");
-const ora = require("ora");
+const ora_1 = require("ora");
 const log_symbols_1 = require("log-symbols");
 const path_1 = require("path");
 const util_1 = require("./util");
 const download = require('download-git-repo');
-let spinner;
-function create(name, options) {
-    spinner = ora(`downloading template... from ${options.repository}`);
-    spinner.start();
-    download(options.repository, name, { clone: false }, async (err) => {
-        if (err) {
-            throw err;
-        }
-        spinner.succeed();
-        spinner = ora('compile template...');
+function effectDownloading(options) {
+    let spinner;
+    return new Promise((resolve, reject) => {
+        spinner = ora_1.default(`downloading template... from ${options.repository}`);
         spinner.start();
-        const sourceData = util_1.serializePathName(name);
-        util_1.effectCompileTemplate(`${name}/package.json`, sourceData);
-        util_1.effectCompileTemplate(`${name}/startup.json`, sourceData);
-        spinner.succeed();
-        console.log(log_symbols_1.success, chalk.default.green('all finish...'));
-        console.log('run');
-        console.log(chalk.default.green(`  cd ${name} && npm install`));
-        console.log(chalk.default('  npm run dev'));
+        download(options.repository, options.projectName, { clone: false }, err => {
+            if (err) {
+                spinner.fail();
+                reject(err);
+            }
+            spinner.succeed();
+            resolve();
+        });
     });
 }
-function serveNew(name, repositoryPath, options) {
-    try {
-        if (!name) {
-            console.error(chalk.default.red('app-name should be not empty'));
-            return;
-        }
-        if (name === '.') {
-            name = path_1.basename(process.cwd());
-        }
-        create(name, { repository: repositoryPath || 'github:yuezm/nest-template#master' });
+function effectCreate(projectName) {
+    const spinner = ora_1.default('compile template...');
+    spinner.start();
+    const sourceData = util_1.serializePathName(projectName);
+    util_1.effectCompileTemplate(`${projectName}/package.json`, sourceData);
+    util_1.effectCompileTemplate(`${projectName}/startup.json`, sourceData);
+    spinner.succeed();
+}
+async function serveNew(name, repositoryPath, cmd) {
+    if (!name) {
+        console.error(chalk.default.red('app-name should be not empty'));
+        return;
     }
-    catch (e) {
-        console.error(chalk.default.red(e));
-        spinner && spinner.fail();
+    if (name === '.') {
+        name = path_1.basename(process.cwd());
     }
+    await effectDownloading({ projectName: name, repository: repositoryPath || 'github:yuezm/nest-template#master' });
+    effectCreate(name);
+    console.log(log_symbols_1.success, chalk.default.green('all finish...'));
+    console.log('run');
+    console.log(chalk.default.green(`  cd ${name} && npm install`));
+    console.log(chalk.default('  npm run dev'));
 }
 exports.serveNew = serveNew;

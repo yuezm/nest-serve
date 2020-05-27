@@ -15,8 +15,7 @@ function effectGenerator(options) {
     if (fs_1.existsSync(APP_MODULE_PATH)) {
         let appStr = fs_1.readFileSync(APP_MODULE_PATH).toString();
         if (appStr.includes(`import { ${sourceData.nameHump}Module } from '@App/${sourceData.name}/${sourceData.path}.module'`)) {
-            console.error(chalk.default.red('模块重复'));
-            return;
+            throw Error('模块重复');
         }
         appStr = appStr.replace(APP_IMPORT_REG, (p) => {
             return p + `import { ${sourceData.nameHump}Module } from '@App/${options.moduleName}/${sourceData.path}.module';\n`;

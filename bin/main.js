@@ -2,11 +2,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
+const commander = new commander_1.Command();
 const packageJson = require('../package');
 const new_1 = require("./new");
 const generate_1 = require("./generate");
-commander_1.version(packageJson.version).usage('<command> [options]');
-commander_1.command('new <app-name> [repository-path]')
+commander.version(packageJson.version).usage('<command> [options]');
+commander.command('new <app-name> [repository-path]')
     .alias('n')
     .option('--http', '创建HTTP 服务')
     .option('--micro', '创建微服务，默认gRPC')
@@ -14,7 +15,7 @@ commander_1.command('new <app-name> [repository-path]')
     .action((name, repositoryPath, cmd) => {
     new_1.serveNew(name, repositoryPath, cmd);
 });
-commander_1.command('generate <name>')
+commander.command('generate <name>')
     .alias('g')
     .option('-m,--module', '只创建 *.module.ts')
     .option('-c,--controller', '只创建 *.controller.ts')
@@ -27,6 +28,7 @@ commander_1.command('generate <name>')
     .action((name, cmd) => {
     generate_1.serveGenerate(name, cmd);
 });
-if (commander_1.parse(process.argv).args.length < 1) {
-    commander_1.help();
+if (commander.parse(process.argv).args.length < 1) {
+    commander.help();
 }
+exports.default = commander;

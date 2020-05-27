@@ -6,7 +6,7 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { Command } from 'commander';
 import { join } from 'path';
 
-import { effectCompile, ETemplateType, ICompileArgs, INameSerialization, serializePathName } from './util';
+import { effectCompile, ETemplateType, ICompileArgs, serializePathName } from './util';
 
 const APP_MODULE_PATH = './src/app/app.module.ts';
 const APP_IMPORT_REG = /(import.*?)((?=@Global)|(?=@Module))/s;
@@ -31,8 +31,7 @@ function effectGenerator(options: IGeneratorOptions) {
     // 避免重复添加
 
     if (appStr.includes(`import { ${ sourceData.nameHump }Module } from '@App/${ sourceData.name }/${ sourceData.path }.module'`)) {
-      console.error(chalk.default.red('模块重复'));
-      return;
+      throw Error('模块重复');
     }
 
     // 替换 import

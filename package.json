@@ -50,6 +50,7 @@
       "json",
       "ts"
     ],
+    "testTimeout": 30000,
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/",
       "<rootDir>/example/"

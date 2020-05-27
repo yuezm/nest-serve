@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
-import { command, version, parse, help, Command } from 'commander';
+import { Command } from 'commander';
 
+const commander = new Command();
 const packageJson = require('../package');
 
 import { serveNew } from './new';
 import { serveGenerate } from './generate';
 
 // 版本
-version(packageJson.version).usage('<command> [options]');
+commander.version(packageJson.version).usage('<command> [options]');
 
 
 // new 命令
-command('new <app-name> [repository-path]')
+commander.command('new <app-name> [repository-path]')
   .alias('n')
   .option('--http', '创建HTTP 服务')
   .option('--micro', '创建微服务，默认gRPC')
@@ -22,7 +23,7 @@ command('new <app-name> [repository-path]')
   });
 
 // generate命令
-command('generate <name>')
+commander.command('generate <name>')
   .alias('g')
   .option('-m,--module', '只创建 *.module.ts')
   .option('-c,--controller', '只创建 *.controller.ts')
@@ -39,6 +40,8 @@ command('generate <name>')
   });
 
 
-if (parse(process.argv).args.length < 1) {
-  help();
+if (commander.parse(process.argv).args.length < 1) {
+  commander.help();
 }
+
+export default commander;
