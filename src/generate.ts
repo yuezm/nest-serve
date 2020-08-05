@@ -6,11 +6,9 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { Command } from 'commander';
 import { join } from 'path';
 
-import { effectCompile, ETemplateType, ICompileArgs, serializePathName } from './util';
+import { effectCompile, ETemplateType, ICompileArgs, serializePathName } from './helper';
 
 const APP_MODULE_PATH = './src/app/app.module.ts';
-const APP_IMPORT_REG = /(import.*?)((?=@Global)|(?=@Module))/s;
-const APP_MODULE_IMPORTS_REG = /@Module.*?imports.*?(?=])/s;
 
 export interface IGeneratorOptions {
   appPath: string;
@@ -26,26 +24,6 @@ function effectGenerator(options: IGeneratorOptions) {
 
   if (existsSync(APP_MODULE_PATH)) {
     // 将该Module加入app.module.ts
-    let appStr: string = readFileSync(APP_MODULE_PATH).toString();
-
-    // 避免重复添加
-
-    if (appStr.includes(`import { ${ sourceData.nameHump }Module } from '@App/${ sourceData.name }/${ sourceData.path }.module'`)) {
-      throw Error('模块重复');
-    }
-
-    // 替换 import
-    appStr = appStr.replace(APP_IMPORT_REG, (p: string) => {
-      return p + `import { ${ sourceData.nameHump }Module } from '@App/${ options.moduleName }/${ sourceData.path }.module';\n`;
-    });
-
-    // 替换imports属性
-    appStr = appStr.replace(APP_MODULE_IMPORTS_REG, (p: string) => {
-      return p + `\u00A0\u00A0${ sourceData.nameHump }Module,`;
-    });
-
-    // 将新的数据写入app.module.ts
-    writeFileSync(APP_MODULE_PATH, appStr);
   }
 }
 

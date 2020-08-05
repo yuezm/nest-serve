@@ -12,6 +12,7 @@
     "incremental": false,
     "alwaysStrict": true,
     "moduleResolution": "node",
+    "strictNullChecks": true,
     "types": [
       "jest",
       "node"

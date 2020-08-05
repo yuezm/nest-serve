@@ -25,12 +25,14 @@
     "download-git-repo": "^2.0.0",
     "ejs": "^3.0.1",
     "log-symbols": "^3.0.0",
-    "ora": "^3.4.0"
+    "ora": "^3.4.0",
+    "prettier": "^2.0.5"
   },
   "devDependencies": {
     "@types/ejs": "^3.0.1",
     "@types/jest": "^25.1.4",
     "@types/node": "^10.16.0",
+    "@types/prettier": "^2.0.1",
     "coffee": "^5.2.2",
     "jest": "^25.2.4",
     "ts-jest": "^25.3.0",

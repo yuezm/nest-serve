@@ -6,7 +6,7 @@ import { success } from 'log-symbols';
 import { basename } from 'path';
 import { Command } from 'commander';
 
-import { effectCompileTemplate, INameSerialization, serializePathName } from './util';
+import { effectCompileTemplate, INameSerialization, serializePathName } from './helper';
 
 
 const download = require('download-git-repo');
