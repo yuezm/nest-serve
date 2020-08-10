@@ -6,11 +6,10 @@ export type VisitNode = Node | null;
 export type VisitPath = Path | null;
 export type VisitPathChildren = Path | Path[] | null;
 export type VisitNodeAttr = string | null;
-export type VisitNodeIndex = number | null;
 export type VisitorHandle = (node: Path) => void;
 export type Visitor = { [ attr: number ]: VisitorHandle };
 
-export const KEYS = [ 'body', 'statements', 'members', 'parameters', 'type' ];
+export const KEYS = [ 'name', 'body', 'statements', 'elements', 'members', 'parameters', 'type', 'declarationList', 'declarations', 'initializer' ];
 
 export function transform(root: VisitPath, visitor?: Visitor): VisitPath {
   if (!root) return null;
@@ -24,19 +23,19 @@ export function transform(root: VisitPath, visitor?: Visitor): VisitPath {
 
     if (Array.isArray(path)) {
       for (const p of path) {
-        if (p.isNew || p.visited) continue;
+        if (p.isNew || p.isVisited) continue;
         visit(p);
       }
     } else {
       // 新节点不予处理
-      if (path.isNew || path.visited) return;
+      if (path.isNew || path.isVisited) return;
 
       // Visitor 执行处
       if (visitor && visitor[ path.kind ]) {
         visitor[ path.kind ](path);
       }
 
-      path.visited = true;
+      path.isVisited = true;
 
       for (const key of KEYS) {
         // 可能会删除当前节点
@@ -50,17 +49,15 @@ export function transform(root: VisitPath, visitor?: Visitor): VisitPath {
 
 export function transNodeToPath(root: VisitNode): VisitPath {
   if (!root) return null;
-  return visit(root, null, null, null);
 
-  function visit(node: VisitNode, parentPath: VisitPath, attr: VisitNodeAttr, index: VisitNodeIndex): VisitPath {
-    if (!node) return null;
+  return visit(root, null, null);
 
-    const path = new Path(node, parentPath, node.kind, attr, index);
+  function visit(node: Node, parentPath: VisitPath, attr: VisitNodeAttr): Path {
+    const path = new Path(node, parentPath, node.kind, attr);
 
     for (const key of KEYS) {
       // 对子属性进行遍历，由于不清楚子属性有哪些，所以使用 KYS 数组指出
       if (node[ key ] && typeof node[ key ] === 'object') {
-
         const childrenNodes: Node | Node[] = node[ key ]; // 可能为数组
 
         if (Array.isArray(childrenNodes)) {
@@ -70,17 +67,21 @@ export function transNodeToPath(root: VisitNode): VisitPath {
           let prevPath: VisitPath = null;
 
           for (let i = 0; i < childrenNodes.length; i++) {
-            const childPath: VisitPath = visit(childrenNodes[ i ], path, key, i);
+
+            const childPath: Path = visit(childrenNodes[ i ], path, key);
+
             path[ key ].push(childPath);
 
             prevPath && (prevPath.next = childPath);
-            childPath && (childPath.prev = prevPath);
+
+            childPath.prev = prevPath;
+            childPath.isArrayNode = true;
 
             prevPath = childPath;
           }
         } else {
           // 遍历子属性，非数组的话，不存在next,prev 啥的
-          path[ key ] = visit(childrenNodes, path, key, null);
+          path[ key ] = visit(childrenNodes, path, key);
         }
       }
     }

@@ -11,13 +11,14 @@ import {
   createNamedImports,
   createImportSpecifier,
   createStringLiteral,
+  Node,
   parseCommandLine,
   ScriptTarget,
-  Node,
   SyntaxKind,
   ClassDeclaration,
   SourceFile,
   InterfaceDeclaration,
+  Statement,
 } from 'typescript';
 
 import { transform, transNodeToPath, transPathToNode, VisitNode, VisitPath } from './visit';
@@ -39,13 +40,10 @@ export function readFileToNode(appPath: string): Node | undefined {
   return program.getSourceFile(appPath);
 }
 
-export function writeFileFromSourceFile(f: SourceFile, path: string): void {
+export function updateLoadSourceFileToString(node: Statement[]): string {
   const printer = createPrinter();
-  writeFileSync(path, printer.printFile(f));
-}
-
-export function updateLoadSourceFile(newFile: SourceFile): SourceFile {
-  return updateSourceFileNode(createSourceFile('code.ts', '', ScriptTarget.Latest), newFile.statements);
+  const sf = updateSourceFileNode(createSourceFile('code.ts', '', ScriptTarget.Latest), node);
+  return printer.printFile(sf);
 }
 
 export function clearClassDefinition(root: VisitNode): VisitNode {
@@ -142,14 +140,14 @@ export function clearClassDefinition(root: VisitNode): VisitNode {
   return node;
 }
 
-export function bootstrap(sourceFilePath: string, targetFilePath: string = sourceFilePath): void {
-  const n: VisitNode = readFileToNode(sourceFilePath) as VisitNode;
-  const newS = clearClassDefinition(n);
+// export function bootstrap(sourceFilePath: string, targetFilePath: string = sourceFilePath): void {
+// const n: VisitNode = readFileToNode(sourceFilePath) as VisitNode;
+// const newS = clearClassDefinition(n);
 
-  if (newS) {
-    const f = updateLoadSourceFile(newS as SourceFile);
-    writeFileFromSourceFile(f, targetFilePath);
-  }
-}
+// if (newS) {
+//   const f = updateLoadSourceFileToString((newS as SourceFile).statements as any);
+//   writeFileFromSourceFile(f, targetFilePath);
+// }
+// }
 
-bootstrap('./erp.d.ts', './erp.d.d.ts');
+// bootstrap('./erp.d.ts', './erp.d.d.ts');

@@ -23,7 +23,7 @@ function effectGenerator(options: IGeneratorOptions) {
   options.templateList.map(type => effectCompile(type, sourceData, join(options.appPath, options.moduleName)));
 
   if (existsSync(APP_MODULE_PATH)) {
-    // 将该Module加入app.module.ts
+    // 将该 Module 加入app.module.ts，使用新的AST方式插入
   }
 }
 
@@ -43,12 +43,7 @@ export function serveGenerate(name: string, cmd: Command) {
       templateList = [ ETemplateType.MODULE, ETemplateType.CONTROLLER, ETemplateType.SERVICE, ETemplateType.DTO, ETemplateType.STATIC, ETemplateType.SPEC ];
     }
 
-    effectGenerator({
-      moduleName: name,
-      appPath: cmd.path ?? 'src/app',
-      templateList,
-      isGRpc: Boolean(cmd.grpc),
-    });
+    effectGenerator({ moduleName: name, appPath: cmd.path ?? 'src/app', templateList, isGRpc: Boolean(cmd.grpc) });
 
     console.log(success, chalk.default.green('already created'));
   } catch (e) {

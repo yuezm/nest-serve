@@ -18,7 +18,7 @@ class TestCommand extends Command {
   static: boolean;
   grpc: boolean;
 
-  constructor({ path = undefined, module = false, controller = false, service = false, dto = false, sta = false, grpc = false } = {}) {
+  constructor({ path = '', module = false, controller = false, service = false, dto = false, sta = false, grpc = false } = {}) {
     super();
     this.path = path;
     this.module = module;
@@ -109,7 +109,7 @@ describe('Test generate.ts', function() {
   it('serveGenerate APP_MODULE_PATH repeat', function() {
     // 再次测试重复添加
     serveGenerate('test', new TestCommand());
-    expect(readFileSync(INTERIM_APP_MODULE_PATH).toString().match(/TestModule/g).length).toBe(2);
+    expect(readFileSync(INTERIM_APP_MODULE_PATH).toString().match(/TestModule/g)?.length).toBe(2);
 
     spawnSync('rm', [ '-r', INTERIM_APP_PATH ]);
   });
