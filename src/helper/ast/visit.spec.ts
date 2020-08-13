@@ -60,7 +60,11 @@ describe('Test Visit', () => {
 
   it('Test transPathToNode delete and trans', () => {
     (p.declarationList.declarations[ 0 ].initializer.elements[ 1 ] as Path).deleteNode();
+
     const node = transPathToNode(p);
+
+    expect((p.declarationList.declarations[ 0 ].initializer.elements[ 1 ] as Path).node).toBeNull();
+    expect((node as any).declarationList.declarations[ 0 ].initializer.elements[ 1 ]).toBeUndefined();
     expect(updateLoadSourceFileToString([ node as any ])).toBe('const a = [1];\n');
   });
 

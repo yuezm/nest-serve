@@ -12,8 +12,6 @@ export type Visitor = { [ attr: number ]: VisitorHandle };
 export const KEYS = [ 'name', 'body', 'statements', 'elements', 'members', 'parameters', 'type', 'declarationList', 'declarations', 'initializer' ];
 
 export function transform(root: VisitPath, visitor?: Visitor): VisitPath {
-  if (!root) return null;
-
   visit(root);
 
   return root;
@@ -90,7 +88,6 @@ export function transNodeToPath(root: VisitNode): VisitPath {
 }
 
 export function transPathToNode(root: VisitPath): VisitNode {
-  if (!root) return null;
   return visit(root);
 
   function visit(path: VisitPath): VisitNode {
